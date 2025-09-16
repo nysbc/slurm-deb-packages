@@ -14,7 +14,7 @@ ARG LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/local/n
 
 # Install dependencies
 RUN apt-get update && \
-    apt -y install \
+    apt-get -y install \
         git  \
         build-essential \
         devscripts \
