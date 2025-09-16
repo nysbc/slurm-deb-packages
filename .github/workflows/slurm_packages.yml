@@ -21,20 +21,17 @@ jobs:
         distribution:
          - deb11
          - deb13
-        ld_library_path: 
-          - /lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/mpi/gcc/openmpi-${OPENMPI_VERSION}/lib
         include:
           - distribution: deb11
-            base_image: debian:11
+            base_image: debian:bullseye
+            openmpi:
+              version: 1.13
           - distribution: deb13
-            base_image: debian:13
+            base_image: debian:trixie
+            openmpi:
+              version: 1.18
 
     steps:
-      #- name: Harden Runner
-      #  uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
-      #  with:
-      #    egress-policy: audit
-
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
@@ -55,7 +52,7 @@ jobs:
           build-args: |
             BASE_IMAGE=${{ matrix.base_image }}
             SLURM_VERSION=${{ matrix.slurm.version }}
-            LD_LIBRARY_PATH=${{ matrix.ld_library_path }}
+            OPENMPI_VERSION=${{ matrix.openmpi.version }}
           cache-from: type=local,src=.buildx-cache
           cache-to: type=local,dest=.buildx-cache,mode=max
 
