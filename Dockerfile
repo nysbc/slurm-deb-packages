@@ -1,17 +1,9 @@
 ARG BASE_IMAGE=debian:bullseye
-
 FROM $BASE_IMAGE
-
-ARG SLURM_VERSION=23.11.11
-ARG OPENMPI_VERSION=1.13
-ARG LIBJWT=libjwt0
-
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/targets/x86_64-linux/lib:/usr/mpi/gcc/openmpi-${OPENMPI_VERSION}/lib
-
-
 # Install dependencies
+ARG LIBJWT_PKG=libjwt0
 RUN apt-get update && \
     apt-get install -y \
         git  \
@@ -31,7 +23,7 @@ RUN apt-get update && \
         libjson-c-dev \
         munge \
         libmunge-dev \
-        ${LIBJWT} \
+        ${LIBJWT_PKG} \
         libjwt-dev \
         libhwloc-dev \
         liblz4-dev \
@@ -45,15 +37,18 @@ RUN apt-get update && \
         libpmix2 \
         libpmix-dev
 
+# Install Openmpi
+ARG OPENMPI_VERSION=1.13
+RUN apt-get update && \
+    apt-get install -y mpi-default-bin=${OPENMPI_VERSION} mpi-default-dev=${OPENMPI_VERSION}
+
 # Download Slurm
+ARG SLURM_VERSION=23.11.11
 RUN cd /usr/src && \
     wget https://download.schedmd.com/slurm/slurm-${SLURM_VERSION}.tar.bz2 && \
     tar -xvf slurm-${SLURM_VERSION}.tar.bz2 && \
     rm slurm-${SLURM_VERSION}.tar.bz2
 
-# Install Openmpi
-RUN apt-get update && \
-    apt-get install -y mpi-default-bin=${OPENMPI_VERSION} mpi-default-dev=${OPENMPI_VERSION}
 
 #ENV PATH=$PATH:/usr/mpi/gcc/openmpi-${OPENMPI_VERSION}/bin
 
