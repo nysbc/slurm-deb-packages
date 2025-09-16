@@ -8,8 +8,8 @@ permissions:
 
 jobs:
   build:
-    name: Build for ${{ matrix.platform }}
-    runs-on: ${{ matrix.runner }}
+    name: Build for ${{ matrix.distribution }}-${{ matrix.platform }}
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -21,10 +21,9 @@ jobs:
         distribution:
          - deb11
          - deb13
+        ld_library_path: 
+          - /lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/mpi/gcc/openmpi-${OPENMPI_VERSION}/lib
         include:
-          - platform: linux/amd64
-            runner: X64
-            ld_library_path: /lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/mpi/gcc/openmpi-${OPENMPI_VERSION}/lib
           - distribution: deb11
             base_image: debian:11
           - distribution: deb13
