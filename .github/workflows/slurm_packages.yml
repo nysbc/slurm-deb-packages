@@ -26,10 +26,14 @@ jobs:
             base_image: debian:bullseye
             openmpi:
               version: 1.13
+            libjwt:
+              package_name: libjwt0
           - distribution: deb13
             base_image: debian:trixie
             openmpi:
               version: 1.18
+            libjwt:
+              package_name: libjwt2
 
     steps:
       - name: Checkout repository
@@ -53,6 +57,7 @@ jobs:
             BASE_IMAGE=${{ matrix.base_image }}
             SLURM_VERSION=${{ matrix.slurm.version }}
             OPENMPI_VERSION=${{ matrix.openmpi.version }}
+            LIBJWT=${{ matrix.libjwt.package_name }}
           cache-from: type=local,src=.buildx-cache
           cache-to: type=local,dest=.buildx-cache,mode=max
 

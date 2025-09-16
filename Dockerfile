@@ -4,6 +4,7 @@ FROM $BASE_IMAGE
 
 ARG SLURM_VERSION=23.11.11
 ARG OPENMPI_VERSION=1.13
+ARG LIBJWT=libjwt0
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -30,7 +31,7 @@ RUN apt-get update && \
         libjson-c-dev \
         munge \
         libmunge-dev \
-        libjwt0 \
+        ${LIBJWT} \
         libjwt-dev \
         libhwloc-dev \
         liblz4-dev \
