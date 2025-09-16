@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=cr.eu-north1.nebius.cloud/soperator/cuda_base:12.9.0-ubuntu24.04-nccl2.26.5-1-295cb71
+ARG BASE_IMAGE=debian:11
 
 FROM $BASE_IMAGE
 
@@ -53,11 +53,8 @@ RUN cd /usr/src && \
     rm -rf slurm-${SLURM_VERSION}.tar.bz2
 
 # Install Openmpi
-RUN cd /etc/apt/sources.list.d && \
-    wget https://linux.mellanox.com/public/repo/mlnx_ofed/${OFED_VERSION}/ubuntu24.04/mellanox_mlnx_ofed.list && \
-    wget -qO - https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox | apt-key add - && \
-    apt update && \
-    apt install openmpi=${OPENMPI_VERSION}-${OPENMPI_SUBVERSION}
+RUN apt-get update && \
+    apt-get install -y openmpi=${OPENMPI_VERSION}-${OPENMPI_SUBVERSION}
 
 ENV PATH=$PATH:/usr/mpi/gcc/openmpi-${OPENMPI_VERSION}/bin
 

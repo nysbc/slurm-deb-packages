@@ -2,28 +2,7 @@
 
 This repository contains binary packages and related files. Below is a list of these files along with their respective licenses:
 
-### 1. NCCL (NVIDIA Collective Communications Library)
-
-**Files:**
-
--   `libnccl-dev_*.deb`
--   `libnccl2_*.deb`
-
-**License:**
-
--   BSD License: https://github.com/NVIDIA/nccl/blob/master/LICENSE.txt
-
-### 2. NCCL Tests
-
-**Files:**
-
--   `nccl-tests-perf.tar.gz`
-
-**License:**
-
--   BSD 3-Clause License: https://github.com/NVIDIA/nccl-tests/blob/master/LICENSE.txt
-
-### 3. Open MPI
+### 1. Open MPI
 
 **Files:**
 
@@ -34,7 +13,7 @@ This repository contains binary packages and related files. Below is a list of t
 
 -   BSD 3-Clause License https://www.open-mpi.org/community/license.php
 
-### 4. SLURM (Simple Linux Utility for Resource Management)
+### 2. SLURM (Simple Linux Utility for Resource Management)
 
 **Files:**
 
