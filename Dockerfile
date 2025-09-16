@@ -1,10 +1,9 @@
-ARG BASE_IMAGE=debian:11
+ARG BASE_IMAGE=debian:bullseye
 
 FROM $BASE_IMAGE
 
-ARG SLURM_VERSION
-ARG OPENMPI_VERSION=4.1.7a1
-ARG OPENMPI_SUBVERSION=1.2404066
+ARG SLURM_VERSION=23.11.11
+ARG OPENMPI_VERSION=1.13
 ARG OFED_VERSION=24.04-0.7.0.0
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -14,7 +13,7 @@ ARG LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/local/n
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get -y install \
+    apt-get install -y \
         git  \
         build-essential \
         devscripts \
@@ -32,7 +31,7 @@ RUN apt-get update && \
         libjson-c-dev \
         munge \
         libmunge-dev \
-        libjwt2 \
+        libjwt0 \
         libjwt-dev \
         libhwloc-dev \
         liblz4-dev \
@@ -50,13 +49,13 @@ RUN apt-get update && \
 RUN cd /usr/src && \
     wget https://download.schedmd.com/slurm/slurm-${SLURM_VERSION}.tar.bz2 && \
     tar -xvf slurm-${SLURM_VERSION}.tar.bz2 && \
-    rm -rf slurm-${SLURM_VERSION}.tar.bz2
+    rm slurm-${SLURM_VERSION}.tar.bz2
 
 # Install Openmpi
 RUN apt-get update && \
-    apt-get install -y openmpi=${OPENMPI_VERSION}-${OPENMPI_SUBVERSION}
+    apt-get install -y mpi-default-bin=${OPENMPI_VERSION} mpi-default-dev=${OPENMPI_VERSION}
 
-ENV PATH=$PATH:/usr/mpi/gcc/openmpi-${OPENMPI_VERSION}/bin
+#ENV PATH=$PATH:/usr/mpi/gcc/openmpi-${OPENMPI_VERSION}/bin
 
 # Build deb packages for Slurm
 RUN cd /usr/src/slurm-${SLURM_VERSION} && \
