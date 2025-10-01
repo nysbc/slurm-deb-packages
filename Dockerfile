@@ -44,10 +44,12 @@ RUN apt-get update && \
 
 # Download Slurm
 ARG SLURM_VERSION=23.11.11
+ARG GITHUB_ORG=SchedMD
+ARG GITHUB_REPO=slurm
+ARG GIT_BRANCH=slurm-25-05-2-1
+ADD "https://api.github.com/repos/${GITHUB_ORG}/${GITHUB_REPO}/commits?per_page=1&sha=${GIT_BRANCH}" latest_commit
 RUN cd /usr/src && \
-    wget https://download.schedmd.com/slurm/slurm-${SLURM_VERSION}.tar.bz2 && \
-    tar -xvf slurm-${SLURM_VERSION}.tar.bz2 && \
-    rm slurm-${SLURM_VERSION}.tar.bz2
+    git clone -b ${GIT_BRANCH}  https://github.com/${GITHUB_ORG}/${GITHUB_REPO}.git slurm-${SLURM_VERSION}
 
 
 #ENV PATH=$PATH:/usr/mpi/gcc/openmpi-${OPENMPI_VERSION}/bin
@@ -55,7 +57,7 @@ RUN cd /usr/src && \
 # Build deb packages for Slurm
 RUN cd /usr/src/slurm-${SLURM_VERSION} && \
     ARCH=$(uname -m) && \
-    sed -i "s|--with-pmix\b|--with-pmix=/usr/lib/${ARCH}-linux-gnu/pmix2|" debian/rules && \
+#    sed -i "s|--with-pmix\b|--with-pmix=/usr/lib/${ARCH}-linux-gnu/pmix2|" debian/rules && \
     mk-build-deps -i debian/control -t "apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y" && \
     debuild -b -uc -us
 
