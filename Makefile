@@ -23,6 +23,10 @@ GITHUB_REPO = slurm
 IMAGE_NAME =  $(DISTRO_CODENAME)-slurm
 REPO_NAME =  $(DISTRO_CODENAME)-slurm
 CONTAINER_NAME=deb-slurm-$(IMAGE_NAME)
+APTLY_DIR = /h2/jpellman/slurm-deb-packages/aptly
+GPG_KEY = 7E5E28E00C712920
+GPG_KEYRING = /h2/jpellman/.gnupg/pubring.kbx
+GPG_PASSPHRASE = /h2/jpellman/slurm-deb-packages/aptly-password
 
 .PHONY: deb11-22.05.7-1
 deb11-22.05.7-1: deb11
@@ -58,15 +62,15 @@ mk-deb: docker-build
 
 .PHONY: init-apt
 init-apt:
-	if [ ! -f /h2/jpellman/slurm-deb-packages/aptly/public/$(DISTRO_CODENAME)/dists/$(DISTRO_CODENAME)/main/binary-amd64/Release ]; then \
+	if [ ! -f $(APTLY_DIR)/public/$(DISTRO_CODENAME)/dists/$(DISTRO_CODENAME)/main/binary-amd64/Release ]; then \
 		aptly repo create -config=aptly.conf -architectures=amd64  -distribution="$(DISTRO_CODENAME)" -component="main"  "$(REPO_NAME)"; \
-		aptly publish repo -config=aptly.conf -architectures=amd64 -distribution="$(DISTRO_CODENAME)" -component="main" "$(REPO_NAME)" $(DISTRO_CODENAME); \
+		aptly publish repo -config=aptly.conf -keyring=$(GPG_KEYRING) -gpg-key=$(GPG_KEY) -passphrase-file=$(GPG_PASSPHRASE) -architectures=amd64 -distribution="$(DISTRO_CODENAME)" -component="main" "$(REPO_NAME)" $(DISTRO_CODENAME); \
 	fi
 
 .PHONY: pub-deb
 pub-deb: init-apt mk-deb
 	aptly repo add -config=aptly.conf  "$(DISTRO_CODENAME)-slurm" ./slurm_packages_output/$(IMAGE_NAME)-$(SLURM_VERSION)/*.deb
-	aptly publish update -config=aptly.conf $(DISTRO_CODENAME) $(DISTRO_CODENAME)
+	aptly publish update -config=aptly.conf -keyring=$(GPG_KEYRING) -gpg-key=$(GPG_KEY) -passphrase-file=$(GPG_PASSPHRASE) $(DISTRO_CODENAME) $(DISTRO_CODENAME)
 
 .PHONY: clean
 clean:
